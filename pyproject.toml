@@ -1,0 +1,41 @@
+[project]
+name = "battery-arb"
+version = "0.1.0"
+description = "Battery storage arbitrage optimiser on Indian day-ahead market (IEX DAM) prices"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "pandas>=2.2",
+    "openpyxl>=3.1",   # reads the .xlsx exports from the IEX snapshot page
+    "pyarrow>=17",     # Parquet cache for cleaned data
+    "pulp>=2.9,<4",    # LP modelling + bundled CBC. <4: PuLP 4 rewrote the API that tutorials use
+    "matplotlib>=3.9",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "ruff>=0.6",
+    "pre-commit>=3.8",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/battery_arb"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+# E/F: pycodestyle + pyflakes, I: import order, B: bugbear, UP: modern syntax, N: naming
+select = ["E", "F", "I", "B", "UP", "N"]
+# Allow maths-style names in functions (T for the set of blocks, E_MAX, ...) as in the formulation
+ignore = ["N806"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
